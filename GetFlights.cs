@@ -31,23 +31,17 @@ public class FlightDataManager : MonoBehaviour
     private async void Start()
     {
         string url = "https://opensky-network.org/api/states/all";
-        string accessKey = "18d9ac328be6cdbe249ab5f8523e9de8";
-        Dictionary<string, string> parameters = new Dictionary<string, string>
-        {
-            { "access_key", accessKey }
-        };
-
-        List<FlightData> flightData = await GetData(url, parameters);
+        List<FlightData> flightData = await GetData(url);
         Debug.Log("Data received: " + flightData.Count + " flights");
     }
 
-    private async Task<List<FlightData>> GetData(string url, Dictionary<string, string> parameters)
+    private async Task<List<FlightData>> GetData(string url)
     {
         List<FlightData> flightData = new List<FlightData>();
 
         using (HttpClient client = new HttpClient())
         {
-            HttpResponseMessage response = await client.GetAsync(url + ToQueryString(parameters));
+            HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 string jsonString = await response.Content.ReadAsStringAsync();
@@ -86,18 +80,5 @@ public class FlightDataManager : MonoBehaviour
         }
 
         return flightData;
-    }
-
-    private string ToQueryString(Dictionary<string, string> parameters)
-    {
-        if (parameters.Count == 0)
-            return "";
-
-        List<string> parts = new List<string>();
-        foreach (var kvp in parameters)
-        {
-            parts.Add(string.Format("{0}={1}", Uri.EscapeDataString(kvp.Key), Uri.EscapeDataString(kvp.Value)));
-        }
-        return "?" + string.Join("&", parts.ToArray());
     }
 }
