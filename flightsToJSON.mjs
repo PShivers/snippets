@@ -39,9 +39,6 @@ const getData = async (url, params = {}) => {
     });
 };
 
-let params = {
-  access_key: "18d9ac328be6cdbe249ab5f8523e9de8",
-};
 let url = "https://opensky-network.org/api/states/all";
 
 const flightData = await getData(url).then((res) =>
